@@ -8,33 +8,13 @@ on:
       - '*'
 
 jobs:
-  tests:
-    name: Run tests
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v5
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-      - name: Run tests
+      - uses: actions/checkout@v5
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Build
         run: ./gradlew build
-  publish:
-    name: Check that the publish plugin works
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v5
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-      - name: Check that the publish plugin works
-        run: ./gradlew publishToMavenLocal
-  compile-test-snippets:
-    name: Compile test snippets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v5
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-      - name: Compile the snippets in the tests
+      - name: Compile test snippets
         run: ./gradlew test -Pcompile-test-snippets

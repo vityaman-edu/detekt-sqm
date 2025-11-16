@@ -1,1 +1,1 @@
-com.github.vityaman-edu.detektsqm.MyRuleSetProvider
+package ru.vityaman.detekt.sqm.MyRuleSetProvider

@@ -1,4 +1,4 @@
-package com.github.vityaman-edu.detektsqm
+package ru.vityaman.detekt.sqm
 
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.rules.KotlinCoreEnvironmentTest
