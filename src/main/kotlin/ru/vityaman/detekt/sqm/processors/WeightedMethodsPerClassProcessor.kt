@@ -24,7 +24,11 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
         fun methodsByClass(): Map<String, List<String>> = methods
 
         override fun visitClass(klass: KtClass) {
-            this.klass = klass.name!!
+            if (klass.fqName == null) {
+                return
+            }
+
+            this.klass = klass.fqName.toString()
             super.visitClass(klass)
             this.klass = null
         }
