@@ -10,10 +10,14 @@ import org.jetbrains.kotlin.resolve.BindingContext
 
 class WeightedMethodsPerClassProcessor : FileProcessListener {
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
+        val pkg = file.packageFqName.toString()
+
         val visitor = KtClassVisitor()
         file.accept(visitor)
 
-        val data = visitor.methodsByClass().mapValues { it.value.size }
+        val data = visitor.methodsByClass()
+            .mapKeys { "$pkg.${it.key}" }
+            .mapValues { it.value.size }
         file.putUserData(dataKey, data)
     }
 

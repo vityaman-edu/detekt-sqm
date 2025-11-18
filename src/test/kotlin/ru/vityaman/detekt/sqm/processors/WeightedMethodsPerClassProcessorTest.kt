@@ -20,7 +20,7 @@ class WeightedMethodsPerClassProcessorTest {
 
         val data = process(code)
         data shouldBeEqual mapOf(
-            "Person" to 2,
+            "<root>.Person" to 2,
         )
     }
 
@@ -39,8 +39,8 @@ class WeightedMethodsPerClassProcessorTest {
 
         val data = process(code)
         data shouldBeEqual mapOf(
-            "Person" to 2,
-            "Person.Child" to 1,
+            "<root>.Person" to 2,
+            "<root>.Person.Child" to 1,
         )
     }
 
