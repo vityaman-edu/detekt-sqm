@@ -19,6 +19,7 @@ class WeightedMethodsPerClassProcessorTest {
         """.trimIndent()
 
         val data = process(code)
+
         data shouldBeEqual mapOf(
             "<root>.Person" to 2,
         )
@@ -38,6 +39,7 @@ class WeightedMethodsPerClassProcessorTest {
         """.trimIndent()
 
         val data = process(code)
+
         data shouldBeEqual mapOf(
             "<root>.Person" to 2,
             "<root>.Person.Child" to 1,
@@ -47,7 +49,7 @@ class WeightedMethodsPerClassProcessorTest {
     private fun process(@Language("kotlin") code: String): Map<String, Int> {
         val ktFile = compileContentForTest(code)
         WeightedMethodsPerClassProcessor().onProcess(ktFile, BindingContext.EMPTY)
-        val data = ktFile.getUserData(WeightedMethodsPerClassProcessor.dataKey)
+        val data = ktFile.getUserData(UserData.weightedMethodsPerClass)
         data shouldNotBeNull {}
         return data
     }

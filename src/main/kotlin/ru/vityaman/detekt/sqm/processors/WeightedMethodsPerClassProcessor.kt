@@ -2,7 +2,6 @@ package ru.vityaman.detekt.sqm.processors
 
 import io.gitlab.arturbosch.detekt.api.DetektVisitor
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
-import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
@@ -18,7 +17,7 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
         val data = visitor.methodsByClass()
             .mapKeys { "$pkg.${it.key}" }
             .mapValues { it.value.size }
-        file.putUserData(dataKey, data)
+        file.putUserData(UserData.weightedMethodsPerClass, data)
     }
 
     private class KtClassVisitor : DetektVisitor() {
@@ -34,6 +33,7 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
 
             this.klass = klass.fqName.toString()
             super.visitClass(klass)
+            klass.putUserData(UserData.methods, methods[this.klass])
             this.klass = null
         }
 
@@ -44,9 +44,5 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
 
             methods.getOrPut(klass!!) { mutableListOf() }.add(function.name!!)
         }
-    }
-
-    companion object {
-        val dataKey = Key<Map<String, Int>>("Weighted Methods Per Class")
     }
 }
