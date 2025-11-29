@@ -22,7 +22,7 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
 
     private class KtClassVisitor : DetektVisitor() {
         private val methods: MutableMap<String, MutableList<String>> = mutableMapOf()
-        private var klass: String? = null
+        private var classes: MutableList<String> = mutableListOf()
 
         fun methodsByClass(): Map<String, List<String>> = methods
 
@@ -31,18 +31,18 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
                 return
             }
 
-            this.klass = klass.fqName.toString()
+            classes.addLast(klass.fqName.toString())
             super.visitClass(klass)
-            klass.putUserData(UserData.methods, methods[this.klass])
-            this.klass = null
+            klass.putUserData(UserData.methods, methods[classes.last()])
+            classes.removeLast()
         }
 
         override fun visitNamedFunction(function: KtNamedFunction) {
-            if (klass == null) {
+            if (classes.isEmpty()) {
                 return
             }
 
-            methods.getOrPut(klass!!) { mutableListOf() }.add(function.name!!)
+            methods.getOrPut(classes.last()) { mutableListOf() }.add(function.name!!)
         }
     }
 }
