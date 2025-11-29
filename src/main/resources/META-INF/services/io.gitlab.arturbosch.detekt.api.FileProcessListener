@@ -1,1 +1,3 @@
-ru.vityaman.detekt.sqm.processors
+ru.vityaman.detekt.sqm.processors.WeightedMethodsPerClassProcessor
+ru.vityaman.detekt.sqm.processors.QualificationProcessor
+ru.vityaman.detekt.sqm.processors.InheritanceTreeProcessor
