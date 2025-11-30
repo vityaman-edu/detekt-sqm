@@ -33,7 +33,10 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
 
             classes.addLast(klass.fqName.toString())
             super.visitClass(klass)
-            klass.putUserData(UserData.methods, methods[classes.last()])
+
+            val methods = methods.getOrDefault(classes.last(), listOf())
+            klass.putUserData(UserData.methods, methods)
+
             classes.removeLast()
         }
 

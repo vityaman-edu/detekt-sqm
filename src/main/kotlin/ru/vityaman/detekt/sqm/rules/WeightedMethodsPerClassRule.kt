@@ -26,7 +26,7 @@ class WeightedMethodsPerClassRule(config: Config) : Rule(config) {
         super.visitClass(klass)
 
         val data = klass.getUserData(UserData.methods)
-        requireNotNull(data)
+        require(data != null)
 
         val count = data.size
         if (count <= threshold) {
