@@ -5,7 +5,9 @@ import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.resolve.BindingContext
+import ru.vityaman.detekt.sqm.core.Log
 
 class WeightedMethodsPerClassProcessor : FileProcessListener {
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
@@ -37,6 +39,14 @@ class WeightedMethodsPerClassProcessor : FileProcessListener {
             val methods = methods.getOrDefault(classes.last(), listOf())
             klass.putUserData(UserData.methods, methods)
 
+            classes.removeLast()
+        }
+
+        override fun visitObjectDeclaration(declaration: KtObjectDeclaration) {
+            declaration.fqName ?: return
+
+            classes.addLast(declaration.fqName.toString())
+            super.visitObjectDeclaration(declaration)
             classes.removeLast()
         }
 

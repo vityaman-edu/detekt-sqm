@@ -10,6 +10,7 @@ import io.gitlab.arturbosch.detekt.api.Severity
 import io.gitlab.arturbosch.detekt.api.ThresholdedCodeSmell
 import io.gitlab.arturbosch.detekt.api.config
 import org.jetbrains.kotlin.psi.KtClass
+import ru.vityaman.detekt.sqm.core.Log
 import ru.vityaman.detekt.sqm.processors.UserData
 
 class WeightedMethodsPerClassRule(config: Config) : Rule(config) {

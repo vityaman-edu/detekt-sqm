@@ -5,7 +5,7 @@ object Log {
 
     fun debug(message: () -> String) {
         if (IS_ACTIVE) {
-            println(message())
+            println("[SQM] ${message()}")
         }
     }
 }
