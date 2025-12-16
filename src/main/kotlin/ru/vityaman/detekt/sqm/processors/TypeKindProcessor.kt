@@ -5,34 +5,40 @@ import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.psiUtil.isAbstract
 import org.jetbrains.kotlin.resolve.BindingContext
 import ru.vityaman.detekt.sqm.core.FQName
+import ru.vityaman.detekt.sqm.core.TypeKind
 
-class InheritanceTreeProcessor : FileProcessListener {
-    private val parents: MutableMap<FQName, Set<FQName>> = mutableMapOf()
+class TypeKindProcessor : FileProcessListener {
+    private val kinds: MutableMap<FQName, TypeKind> = mutableMapOf()
 
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         Visitor().visitKtFile(file)
     }
 
     override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
-        result.addData(UserData.inheritanceTree, parents)
+        result.addData(UserData.typeKind, kinds)
     }
 
-    fun parents(): Map<FQName, Set<FQName>> = parents
+    fun kinds(): Map<FQName, TypeKind> = kinds
 
     inner class Visitor : DetektVisitor() {
         override fun visitClass(klass: KtClass) {
             val fqName = klass.getUserData(UserData.fqName) ?: ""
+            kind(klass)?.let { kinds[fqName] = it }
+        }
 
-            val fqParents = klass
-                .superTypeListEntries
-                .mapNotNull { it.getUserData(UserData.fqName) }
-                .toSet()
-
-            parents[fqName] = fqParents
-
-            super.visitClass(klass)
+        private fun kind(klass: KtClass): TypeKind? {
+            return if (klass.isEnum()) {
+                null
+            } else if (klass.isInterface()) {
+                TypeKind.INTERFACE
+            } else if (klass.isAbstract()) {
+                null
+            } else {
+                TypeKind.CLASS
+            }
         }
     }
 }

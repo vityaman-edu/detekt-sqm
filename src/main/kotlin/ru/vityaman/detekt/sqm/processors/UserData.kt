@@ -1,10 +1,13 @@
 package ru.vityaman.detekt.sqm.processors
 
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
+import ru.vityaman.detekt.sqm.core.FQName
+import ru.vityaman.detekt.sqm.core.TypeKind
 
 object UserData {
     val weightedMethodsPerClass = Key<Map<String, Int>>("WeightedMethodsPerClass")
     val methods = Key<List<String>>("Methods")
-    val fqName = Key<String>("FullyQualifiedName")
-    val inheritanceTree = Key<Map<String, Set<String>>>("InheritanceTree")
+    val fqName = Key<FQName>("FullyQualifiedName")
+    val inheritanceTree = Key<Map<FQName, Set<FQName>>>("InheritanceTree")
+    val typeKind = Key<Map<FQName, TypeKind>>("TypeKind")
 }
