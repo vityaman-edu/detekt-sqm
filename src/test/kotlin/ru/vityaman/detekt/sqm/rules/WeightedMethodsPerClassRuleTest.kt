@@ -33,7 +33,6 @@ class WeightedMethodsPerClassRuleTest {
             }
         """.trimIndent()
 
-
         val findings = lint(code)
 
         findings shouldHaveSingleElement { it.id == subject.ruleId }

@@ -40,13 +40,45 @@ class InheritanceTreeProcessorTest {
         )
     }
 
-    private fun process(@Language("kotlin") code: String): Map<String, Set<String>> {
-        val file = compileContentForTest(code)
+    @Test
+    fun multifile() {
+        val sources = arrayOf(
+            """
+            package a.b.c
+            import x.y.z.Y
+            class A : Y
+            class B
+            """.trimIndent(),
+            """
+            package x.y.z
+            import a.b.c.B
+            class X : B
+            class Y
+            """.trimIndent(),
+        )
 
-        QualificationProcessor().onProcess(file, BindingContext.EMPTY)
+        process(sources) shouldBeEqual mapOf(
+            "a.b.c.A" to setOf("x.y.z.Y"),
+            "a.b.c.B" to setOf(),
+            "x.y.z.X" to setOf("a.b.c.B"),
+            "x.y.z.Y" to setOf(),
+        )
+    }
 
-        return InheritanceTreeProcessor()
-            .also { it.onProcess(file, BindingContext.EMPTY) }
-            .parents()
+    private fun process(@Language("kotlin") code: String): Map<String, Set<String>> =
+        process(arrayOf(code))
+
+    private fun process(sources: Array<String>): Map<String, Set<String>> {
+        val files = sources.map { compileContentForTest(it) }
+
+        val context = BindingContext.EMPTY
+
+        val qualification = QualificationProcessor()
+        files.forEach { qualification.onProcess(it, context) }
+
+        val inheritance = InheritanceTreeProcessor()
+        files.forEach { inheritance.onProcess(it, context) }
+
+        return inheritance.parents()
     }
 }
