@@ -9,7 +9,7 @@ detekt --input ... --plugins build/libs/detekt-sqm-0.1.0.jar --all-rules
 
 ## Plan
 
-- [ ] WMC: Weighted methods per class
+- [x] WMC: Weighted methods per class
 - [ ] DIT: Depth of Inheritance Tree
 - [ ] NOC: Number of Children
 - [ ] CBO: Coupling between object classes

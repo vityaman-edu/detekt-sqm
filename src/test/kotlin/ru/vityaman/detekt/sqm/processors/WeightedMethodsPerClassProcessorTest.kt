@@ -21,7 +21,23 @@ class WeightedMethodsPerClassProcessorTest {
         val data = process(code)
 
         data shouldBeEqual mapOf(
-            "<root>.Person" to 2,
+            "Person" to 2,
+        )
+    }
+
+    @Test
+    fun pkg() {
+        val code = """
+            package a.b.c
+            class A {
+                fun f(): String
+            }
+        """.trimIndent()
+
+        val data = process(code)
+
+        data shouldBeEqual mapOf(
+            "a.b.c.A" to 1,
         )
     }
 
@@ -41,8 +57,8 @@ class WeightedMethodsPerClassProcessorTest {
         val data = process(code)
 
         data shouldBeEqual mapOf(
-            "<root>.Person" to 2,
-            "<root>.Person.Child" to 1,
+            "Person" to 2,
+            "Person.Child" to 1,
         )
     }
 

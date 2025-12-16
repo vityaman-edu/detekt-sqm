@@ -1,32 +1,41 @@
 package ru.vityaman.detekt.sqm.processors
 
 import io.gitlab.arturbosch.detekt.api.DetektVisitor
+import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.resolve.BindingContext
+import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.Log
 
 class WeightedMethodsPerClassProcessor : FileProcessListener {
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
-        val pkg = file.packageFqName.toString()
-
         val visitor = KtClassVisitor()
         file.accept(visitor)
 
         val data = visitor.methodsByClass()
-            .mapKeys { "$pkg.${it.key}" }
+            .mapKeys { it.key }
             .mapValues { it.value.size }
         file.putUserData(UserData.weightedMethodsPerClass, data)
+    }
+
+    override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
+        val methods = mutableMapOf<FQName, Int>()
+        for (file in files) {
+            val data = file.getUserData(UserData.weightedMethodsPerClass) ?: continue
+            methods += data
+        }
+        result.addData(UserData.weightedMethodsPerClass, methods)
     }
 
     private class KtClassVisitor : DetektVisitor() {
         private val methods: MutableMap<String, MutableList<String>> = mutableMapOf()
         private var classes: MutableList<String> = mutableListOf()
 
-        fun methodsByClass(): Map<String, List<String>> = methods
+        fun methodsByClass(): Map<FQName, List<String>> = methods
 
         override fun visitClass(klass: KtClass) {
             if (klass.fqName == null) {

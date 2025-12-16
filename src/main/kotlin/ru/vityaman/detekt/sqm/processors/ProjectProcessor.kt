@@ -1,5 +1,6 @@
 package ru.vityaman.detekt.sqm.processors
 
+import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtFile
@@ -14,5 +15,14 @@ abstract class ProjectProcessor<T> : FileProcessListener {
     final override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         val lhs = file.project.getUserData(key)
         file.project.putUserData(key, merge(lhs, visit(file)))
+    }
+
+    final override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
+        files
+            .map { it.project }
+            .toSet()
+            .mapNotNull { it.getUserData(key) }
+            .reduceOrNull<T, T> { lhs, rhs -> merge(lhs, rhs) }
+            ?.let { result.addData(key, it) }
     }
 }

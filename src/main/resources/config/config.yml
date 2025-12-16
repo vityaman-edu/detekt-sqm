@@ -1,3 +1,5 @@
 SQM:
   WeightedMethodsPerClassRule:
     active: true
+  InheritanceTreeDepth:
+    active: true
