@@ -39,7 +39,7 @@ class WeightedMethodsPerClassRule(config: Config) : Rule(config) {
                 entity = Entity.from(klass),
                 metric = Metric(type = "SIZE", value = count, threshold = threshold),
                 message = with(StringBuilder()) {
-                    append("The file ${klass.fqName} has $count functions. ")
+                    append("The class ${klass.fqName} has $count functions. ")
                     append("Threshold is specified with $threshold.")
                     toString()
                 },

@@ -15,7 +15,7 @@ class WeightedMethodsPerClassRuleTest {
     private val subject = WeightedMethodsPerClassRule(Config.empty)
 
     @Test
-    fun silent() {
+    fun activation() {
         val code = """
             class BookCreature {
                 fun id(): Long?

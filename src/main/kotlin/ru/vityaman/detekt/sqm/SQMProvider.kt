@@ -3,6 +3,7 @@ package ru.vityaman.detekt.sqm
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
+import ru.vityaman.detekt.sqm.rules.InheritanceTreeDepthRule
 import ru.vityaman.detekt.sqm.rules.WeightedMethodsPerClassRule
 
 class SQMProvider : RuleSetProvider {
@@ -14,6 +15,7 @@ class SQMProvider : RuleSetProvider {
             ruleSetId,
             listOf(
                 WeightedMethodsPerClassRule(config),
+                InheritanceTreeDepthRule(config),
             ),
         )
 }
