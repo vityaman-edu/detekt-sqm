@@ -1,29 +1,29 @@
 package ru.vityaman.detekt.sqm.processors
 
 import io.gitlab.arturbosch.detekt.api.DetektVisitor
-import io.gitlab.arturbosch.detekt.api.Detektion
-import io.gitlab.arturbosch.detekt.api.FileProcessListener
+import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.isAbstract
-import org.jetbrains.kotlin.resolve.BindingContext
 import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.TypeKind
 
-class TypeKindProcessor : FileProcessListener {
-    private val kinds: MutableMap<FQName, TypeKind> = mutableMapOf()
+class TypeKindProcessor : ProjectProcessor<Map<FQName, TypeKind>>() {
+    override val key: Key<Map<FQName, TypeKind>>
+        get() = UserData.typeKind
 
-    override fun onProcess(file: KtFile, bindingContext: BindingContext) {
-        Visitor().visitKtFile(file)
-    }
+    override fun visit(file: KtFile): Map<FQName, TypeKind> =
+        Visitor().also { it.visitFile(file) }.kinds
 
-    override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
-        result.addData(UserData.typeKind, kinds)
-    }
+    override fun merge(
+        lhs: Map<FQName, TypeKind>?,
+        rhs: Map<FQName, TypeKind>
+    ): Map<FQName, TypeKind> =
+        (lhs ?: emptyMap()) + rhs
 
-    fun kinds(): Map<FQName, TypeKind> = kinds
+    private inner class Visitor : DetektVisitor() {
+        val kinds: MutableMap<FQName, TypeKind> = mutableMapOf()
 
-    inner class Visitor : DetektVisitor() {
         override fun visitClass(klass: KtClass) {
             val fqName = klass.getUserData(UserData.fqName) ?: ""
             kind(klass)?.let { kinds[fqName] = it }

@@ -1,12 +1,16 @@
 package ru.vityaman.detekt.sqm.processors
 
-import io.github.detekt.test.utils.compileContentForTest
+import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import io.kotest.matchers.equals.shouldBeEqual
-import org.intellij.lang.annotations.Language
-import org.jetbrains.kotlin.resolve.BindingContext
 import org.junit.jupiter.api.Test
+import ru.vityaman.detekt.sqm.core.FQName
 
-class InheritanceTreeProcessorTest {
+class InheritanceTreeProcessorTest : ProjectProcessorTest<Map<FQName, Set<FQName>>>() {
+    override val processor: InheritanceTreeProcessor
+        get() = InheritanceTreeProcessor()
+
+    override val dependencies: List<() -> FileProcessListener>
+        get() = listOf { QualificationProcessor() }
 
     @Test
     fun single() {
@@ -42,7 +46,7 @@ class InheritanceTreeProcessorTest {
 
     @Test
     fun multifile() {
-        val sources = arrayOf(
+        val sources = listOf(
             """
             package a.b.c
             import x.y.z.Y
@@ -63,22 +67,5 @@ class InheritanceTreeProcessorTest {
             "x.y.z.X" to setOf("a.b.c.B"),
             "x.y.z.Y" to setOf(),
         )
-    }
-
-    private fun process(@Language("kotlin") code: String): Map<String, Set<String>> =
-        process(arrayOf(code))
-
-    private fun process(sources: Array<String>): Map<String, Set<String>> {
-        val files = sources.map { compileContentForTest(it) }
-
-        val context = BindingContext.EMPTY
-
-        val qualification = QualificationProcessor()
-        files.forEach { qualification.onProcess(it, context) }
-
-        val inheritance = InheritanceTreeProcessor()
-        files.forEach { inheritance.onProcess(it, context) }
-
-        return inheritance.parents()
     }
 }
