@@ -10,4 +10,5 @@ object UserData {
     val fqName = Key<FQName>("FullyQualifiedName")
     val inheritanceTree = Key<Map<FQName, Set<FQName>>>("InheritanceTree")
     val typeKind = Key<Map<FQName, TypeKind>>("TypeKind")
+    val inheritanceDepth = Key<Map<FQName, Int>>("InheritanceTreeDepth")
 }

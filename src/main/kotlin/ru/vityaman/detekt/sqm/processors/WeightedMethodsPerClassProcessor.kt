@@ -12,6 +12,10 @@ import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.Log
 
 class WeightedMethodsPerClassProcessor : FileProcessListener {
+    override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
+        Log.debug { "Running ${UserData.weightedMethodsPerClass}..." }
+    }
+
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         val visitor = KtClassVisitor()
         file.accept(visitor)

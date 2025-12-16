@@ -5,12 +5,17 @@ import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.BindingContext
+import ru.vityaman.detekt.sqm.core.Log
 
 abstract class ProjectProcessor<T> : FileProcessListener {
     abstract val key: Key<T>
 
     protected abstract fun visit(file: KtFile): T
     protected abstract fun merge(lhs: T?, rhs: T): T
+
+    override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
+        Log.debug { "Running $key" }
+    }
 
     final override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         val lhs = file.project.getUserData(key)

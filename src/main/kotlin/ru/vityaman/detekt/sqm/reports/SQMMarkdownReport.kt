@@ -14,23 +14,41 @@ class SQMMarkdownReport : OutputReport() {
     override val ending: String
         get() = "md"
 
-    override fun render(detektion: Detektion): String? {
+    override fun render(detektion: Detektion): String? = with(StringBuilder()) {
+        append("# Software Quality Metrics Report\n")
+        append("\n")
+
         val methods = detektion.getData(UserData.weightedMethodsPerClass)
-
-        return with(StringBuilder()) {
-            append("# Software Quality Metrics Report\n")
+        if (methods != null) {
+            append("## Weighted Methods Per Class\n")
             append("\n")
-
-            if (methods != null) {
-                append("## Weighted Methods Per Class\n")
-                append("\n")
-                for ((klass, methods) in methods) {
-                    append("- `$klass`: $methods\n")
-                }
-                append("\n")
+            for ((klass, methods) in methods.toSortedMap()) {
+                append("- `$klass`: $methods\n")
             }
-
-            toString()
+            append("\n")
         }
+
+        val tree = detektion.getData(UserData.inheritanceTree)
+        if (tree != null) {
+            append("## Inheritance Tree\n")
+            append("\n")
+            for ((klass, parents) in tree.toSortedMap()) {
+                val parents = parents.ifEmpty { listOf("Object") }
+                append("- `$klass`: ${parents.joinToString(", ")}\n")
+            }
+            append("\n")
+        }
+
+        val depths = detektion.getData(UserData.inheritanceDepth)
+        if (depths != null) {
+            append("## Depth of Inheritance Tree\n")
+            append("\n")
+            for ((klass, depth) in depths.toSortedMap()) {
+                append("- `$klass`: $depth\n")
+            }
+            append("\n")
+        }
+
+        toString()
     }
 }

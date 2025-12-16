@@ -7,9 +7,14 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtSuperTypeEntry
 import org.jetbrains.kotlin.resolve.BindingContext
+import ru.vityaman.detekt.sqm.core.Log
 
 class QualificationProcessor : FileProcessListener {
     private val qualified: MutableMap<String, String> = mutableMapOf()
+
+    override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
+        Log.debug { "Running ${UserData.fqName}..." }
+    }
 
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         Visitor().visitKtFile(file)
