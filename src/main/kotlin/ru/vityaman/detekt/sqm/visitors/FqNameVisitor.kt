@@ -8,23 +8,14 @@ import ru.vityaman.detekt.sqm.processors.UserData
 class FqNameVisitor : DetektVisitor() {
     private val names: MutableSet<String> = mutableSetOf()
 
-    override fun visitSuperTypeEntry(specifier: KtSuperTypeEntry) {
-        visit(specifier)
-        super.visitSuperTypeEntry(specifier)
-    }
-
     override fun visitElement(element: PsiElement) {
         visit(element)
         super.visitElement(element)
     }
 
     private fun visit(element: PsiElement) {
-        val data = element.getUserData(UserData.fqName)
-        if (data == null) {
-            return
-        }
-
-        names.add(data)
+        names.add(element.getUserData(UserData.fqName) ?: return)
+        names.addAll(element.getUserData(UserData.fqParentName)?.values?.toSet() ?: return)
     }
 
     fun names(): Set<String> = names

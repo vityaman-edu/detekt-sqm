@@ -8,6 +8,7 @@ object UserData {
     val weightedMethodsPerClass = Key<Map<String, Int>>("WeightedMethodsPerClass")
     val methods = Key<List<String>>("Methods")
     val fqName = Key<FQName>("FullyQualifiedName")
+    val fqParentName = Key<Map<String, FQName>>("FullyQualifiedParentName")
     val inheritanceTree = Key<Map<FQName, Set<FQName>>>("InheritanceTree")
     val typeKind = Key<Map<FQName, TypeKind>>("TypeKind")
     val inheritanceDepth = Key<Map<FQName, Int>>("InheritanceTreeDepth")

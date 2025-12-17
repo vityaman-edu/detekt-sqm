@@ -4,9 +4,9 @@ set -e
 cd "$(dirname "$0")" || exit
 
 clear
-gradle build
+gradle test
 clear
-(cd "$1"; gradle build)
+(cd "$1"; gradle assemble)
 clear
 detekt \
   --input "$1/src" \

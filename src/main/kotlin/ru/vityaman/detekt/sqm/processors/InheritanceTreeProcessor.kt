@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import ru.vityaman.detekt.sqm.core.FQName
+import ru.vityaman.detekt.sqm.core.Log
 
 class InheritanceTreeProcessor : ProjectProcessor<Map<FQName, Set<FQName>>>() {
     override val key: Key<Map<FQName, Set<FQName>>>
@@ -24,14 +25,9 @@ class InheritanceTreeProcessor : ProjectProcessor<Map<FQName, Set<FQName>>>() {
 
         override fun visitClass(klass: KtClass) {
             val fqName = klass.getUserData(UserData.fqName) ?: ""
+            val fqParentNames = klass.getUserData(UserData.fqParentName) ?: emptyMap()
 
-            val fqParents = klass
-                .superTypeListEntries
-                .mapNotNull { it.getUserData(UserData.fqName) }
-                .toSet()
-
-            parents[fqName] = fqParents
-
+            parents[fqName] = fqParentNames.values.toSet()
             super.visitClass(klass)
         }
     }

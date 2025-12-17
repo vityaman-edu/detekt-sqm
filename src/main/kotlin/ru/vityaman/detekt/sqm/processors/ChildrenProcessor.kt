@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtFile
 import ru.vityaman.detekt.sqm.core.FQName
-import ru.vityaman.detekt.sqm.core.Log
 
 class ChildrenProcessor : ProjectProcessor<Map<FQName, Set<FQName>>>() {
     override val key: Key<Map<FQName, Set<FQName>>>

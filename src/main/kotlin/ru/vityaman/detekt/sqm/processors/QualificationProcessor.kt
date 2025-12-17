@@ -5,8 +5,9 @@ import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportDirective
-import org.jetbrains.kotlin.psi.KtSuperTypeEntry
+import org.jetbrains.kotlin.psi.KtSuperTypeListEntry
 import org.jetbrains.kotlin.resolve.BindingContext
+import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.Log
 
 class QualificationProcessor : FileProcessListener {
@@ -39,18 +40,14 @@ class QualificationProcessor : FileProcessListener {
             qualified[name] = full
             klass.putUserData(UserData.fqName, full)
 
+            val fqParentNames: MutableMap<String, FQName> = mutableMapOf()
+            for (entry in klass.superTypeListEntries) {
+                val name = entry.typeAsUserType?.referencedName ?: ""
+                fqParentNames[name] = qualified[name] ?: name
+            }
+            klass.putUserData(UserData.fqParentName, fqParentNames)
+
             super.visitClass(klass)
-        }
-
-        override fun visitSuperTypeEntry(specifier: KtSuperTypeEntry) {
-            val type = specifier.typeReference?.typeElement
-
-            val name = type?.text ?: ""
-            val full = qualified[name]
-
-            specifier.putUserData(UserData.fqName, full)
-
-            super.visitSuperTypeEntry(specifier)
         }
     }
 }
