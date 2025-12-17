@@ -36,7 +36,7 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
             for ((klass, parents) in tree.toSortedMap()) {
                 val parents = parents.ifEmpty { listOf("Object") }
-                append("- `${map(klass)}`: ${parents.map { map(it) }.joinToString(", ")}\n")
+                append("- `${map(klass)}`: ${parents.joinToString(", ") { map(it) }}\n")
             }
             append("\n")
         }
@@ -56,7 +56,7 @@ class SQMMarkdownReport : OutputReport() {
             append("## Children\n")
             append("\n")
             for ((klass, children) in children.toSortedMap()) {
-                append("- `${map(klass)}`: ${children.map { map(it) }.joinToString(", ")}\n")
+                append("- `${map(klass)}`: ${children.joinToString(", ") { map(it) }}\n")
             }
             append("\n")
         }
