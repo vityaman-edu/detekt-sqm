@@ -49,6 +49,26 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
         }
 
+        val children = detektion.getData(UserData.children)
+        if (children != null) {
+            append("## Children\n")
+            append("\n")
+            for ((klass, children) in children.toSortedMap()) {
+                append("- `$klass`: ${children.joinToString(", ")}\n")
+            }
+            append("\n")
+        }
+
+        val childrenNumber = detektion.getData(UserData.childrenNumber)
+        if (childrenNumber != null) {
+            append("## Number of Children\n")
+            append("\n")
+            for ((klass, children) in childrenNumber.toSortedMap()) {
+                append("- `$klass`: $children\n")
+            }
+            append("\n")
+        }
+
         toString()
     }
 }

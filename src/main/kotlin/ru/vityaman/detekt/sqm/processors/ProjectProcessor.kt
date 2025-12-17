@@ -2,6 +2,7 @@ package ru.vityaman.detekt.sqm.processors
 
 import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
+import org.jetbrains.kotlin.com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.BindingContext
@@ -11,9 +12,14 @@ abstract class ProjectProcessor<T> : FileProcessListener {
     abstract val key: Key<T>
 
     protected abstract fun visit(file: KtFile): T
+
     protected abstract fun merge(lhs: T?, rhs: T): T
 
-    override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
+    protected open fun finish(project: Project): T? {
+        return project.getUserData(key)
+    }
+
+    final override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
         Log.debug { "Running $key" }
     }
 
@@ -23,11 +29,17 @@ abstract class ProjectProcessor<T> : FileProcessListener {
     }
 
     final override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
-        files
-            .map { it.project }
-            .toSet()
-            .mapNotNull { it.getUserData(key) }
-            .reduceOrNull<T, T> { lhs, rhs -> merge(lhs, rhs) }
+        Log.debug { "Finishing $key" }
+        val project = project(files)
+        finish(project)
+            ?.also { project.putUserData(key, it) }
             ?.let { result.addData(key, it) }
     }
+
+    private fun project(files: List<KtFile>): Project =
+        files
+            .map { it.project }
+            .distinct()
+            .also { require(it.size == 1) }
+            .first()
 }
