@@ -2,6 +2,8 @@ package ru.vityaman.detekt.sqm.reports
 
 import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.OutputReport
+import ru.vityaman.detekt.sqm.core.FQName
+import ru.vityaman.detekt.sqm.core.shortenFQ
 import ru.vityaman.detekt.sqm.processors.UserData
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -23,7 +25,7 @@ class SQMMarkdownReport : OutputReport() {
             append("## Weighted Methods Per Class\n")
             append("\n")
             for ((klass, methods) in methods.toSortedMap()) {
-                append("- `$klass`: $methods\n")
+                append("- `${map(klass)}`: $methods\n")
             }
             append("\n")
         }
@@ -34,7 +36,7 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
             for ((klass, parents) in tree.toSortedMap()) {
                 val parents = parents.ifEmpty { listOf("Object") }
-                append("- `$klass`: ${parents.joinToString(", ")}\n")
+                append("- `${map(klass)}`: ${parents.map { map(it) }.joinToString(", ")}\n")
             }
             append("\n")
         }
@@ -44,7 +46,7 @@ class SQMMarkdownReport : OutputReport() {
             append("## Depth of Inheritance Tree\n")
             append("\n")
             for ((klass, depth) in depths.toSortedMap()) {
-                append("- `$klass`: $depth\n")
+                append("- `${map(klass)}`: $depth\n")
             }
             append("\n")
         }
@@ -54,7 +56,7 @@ class SQMMarkdownReport : OutputReport() {
             append("## Children\n")
             append("\n")
             for ((klass, children) in children.toSortedMap()) {
-                append("- `$klass`: ${children.joinToString(", ")}\n")
+                append("- `${map(klass)}`: ${children.map { map(it) }.joinToString(", ")}\n")
             }
             append("\n")
         }
@@ -64,11 +66,14 @@ class SQMMarkdownReport : OutputReport() {
             append("## Number of Children\n")
             append("\n")
             for ((klass, children) in childrenNumber.toSortedMap()) {
-                append("- `$klass`: $children\n")
+                append("- `${map(klass)}`: $children\n")
             }
             append("\n")
         }
 
         toString()
     }
+
+    private fun map(name: FQName): String =
+        shortenFQ(name)
 }
