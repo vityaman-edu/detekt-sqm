@@ -5,3 +5,5 @@ SQM:
     active: true
   Coupling:
     active: true
+  RFC:
+    active: true

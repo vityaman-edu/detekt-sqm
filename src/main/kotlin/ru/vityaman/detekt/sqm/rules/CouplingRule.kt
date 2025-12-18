@@ -1,16 +1,7 @@
 package ru.vityaman.detekt.sqm.rules
 
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.Debt
-import io.gitlab.arturbosch.detekt.api.Entity
-import io.gitlab.arturbosch.detekt.api.Issue
-import io.gitlab.arturbosch.detekt.api.Metric
-import io.gitlab.arturbosch.detekt.api.Rule
-import io.gitlab.arturbosch.detekt.api.Severity
-import io.gitlab.arturbosch.detekt.api.ThresholdedCodeSmell
-import io.gitlab.arturbosch.detekt.api.config
+import io.gitlab.arturbosch.detekt.api.*
 import org.jetbrains.kotlin.psi.KtClass
-import ru.vityaman.detekt.sqm.core.Log
 import ru.vityaman.detekt.sqm.processors.UserData
 
 class CouplingRule(config: Config) : Rule(config) {

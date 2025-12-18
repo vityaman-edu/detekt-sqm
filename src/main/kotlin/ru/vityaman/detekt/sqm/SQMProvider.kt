@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 import ru.vityaman.detekt.sqm.rules.CouplingRule
 import ru.vityaman.detekt.sqm.rules.InheritanceTreeDepthRule
+import ru.vityaman.detekt.sqm.rules.RFCRule
 import ru.vityaman.detekt.sqm.rules.WeightedMethodsPerClassRule
 
 class SQMProvider : RuleSetProvider {
@@ -18,6 +19,7 @@ class SQMProvider : RuleSetProvider {
                 WeightedMethodsPerClassRule(config),
                 InheritanceTreeDepthRule(config),
                 CouplingRule(config),
+                RFCRule(config),
             ),
         )
 }

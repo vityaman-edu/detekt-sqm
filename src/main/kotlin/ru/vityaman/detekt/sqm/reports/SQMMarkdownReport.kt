@@ -103,7 +103,7 @@ class SQMMarkdownReport : OutputReport() {
 
         val rfc = detektion.getData(UserData.classResponse)
         if (rfc != null) {
-            append("## Response for a Class (First Step)\n")
+            append("## Response for a Class (RFC - First Step)\n")
             append("\n")
             for ((klass, rfc) in rfc.toSortedMap()) {
                 append("- `${map(klass)}`: ${rfc}\n")
