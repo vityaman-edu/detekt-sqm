@@ -15,4 +15,5 @@ object UserData {
     val children = Key<Map<FQName, Set<FQName>>>("Children")
     val childrenNumber = Key<Map<FQName, Int>>("ChildrenNumber")
     val referencedTypes = Key<Map<FQName, Set<FQName>>>("ReferencedTypes")
+    val coupling = Key<Map<FQName, Int>>("Coupling")
 }

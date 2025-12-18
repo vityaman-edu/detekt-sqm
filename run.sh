@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")" || exit
 
 clear
-gradle test
+gradle assemble
 clear
 (cd "$1"; gradle assemble)
 clear

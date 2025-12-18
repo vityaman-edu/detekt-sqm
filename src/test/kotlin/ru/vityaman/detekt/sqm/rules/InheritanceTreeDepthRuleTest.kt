@@ -44,8 +44,7 @@ class InheritanceTreeDepthRuleTest {
         """.trimIndent()
 
         lint(code) shouldHaveSingleElement {
-            it.id == subject.ruleId &&
-            "tree depth 6" in it.message
+            it.id == subject.ruleId && "tree depth 6" in it.message
         }
     }
 

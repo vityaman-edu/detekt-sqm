@@ -81,6 +81,16 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
         }
 
+        val coupling = detektion.getData(UserData.coupling)
+        if (coupling != null) {
+            append("## Coupling between Object Classes\n")
+            append("\n")
+            for ((klass, coupling) in coupling.toSortedMap()) {
+                append("- `${map(klass)}`: $coupling\n")
+            }
+            append("\n")
+        }
+
         toString()
     }
 

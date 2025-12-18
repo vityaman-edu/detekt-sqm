@@ -3,3 +3,5 @@ SQM:
     active: true
   InheritanceTreeDepth:
     active: true
+  Coupling:
+    active: true

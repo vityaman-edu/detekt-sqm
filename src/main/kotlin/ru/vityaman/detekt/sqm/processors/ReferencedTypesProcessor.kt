@@ -12,15 +12,11 @@ import org.jetbrains.kotlin.resolve.calls.util.getType
 import ru.vityaman.detekt.sqm.core.FQName
 
 class ReferencedTypesProcessor : ProjectProcessor<Map<FQName, Set<FQName>>>() {
-    private val typesByClass: MutableMap<FQName, Set<FQName>> = mutableMapOf()
-
     override val key: Key<Map<FQName, Set<FQName>>>
         get() = UserData.referencedTypes
 
-    override fun visit(file: KtFile, context: BindingContext): Map<FQName, Set<FQName>> {
-        Visitor(context).visitFile(file)
-        return emptyMap()
-    }
+    override fun visit(file: KtFile, context: BindingContext): Map<FQName, Set<FQName>> =
+        Visitor(context).also { it.visitFile(file) }.typesByClass
 
     override fun merge(
         lhs: Map<FQName, Set<FQName>>?,
@@ -28,16 +24,16 @@ class ReferencedTypesProcessor : ProjectProcessor<Map<FQName, Set<FQName>>>() {
     ): Map<FQName, Set<FQName>> =
         (lhs ?: emptyMap()) + rhs
 
-    override fun finish(project: Project): Map<FQName, Set<FQName>> =
-        typesByClass
-
-    private inner class Visitor(private val context: BindingContext) : DetektVisitor() {
+    private inner class Visitor(
+        private val context: BindingContext,
+        val typesByClass: MutableMap<FQName, Set<FQName>> = mutableMapOf()
+    ) : DetektVisitor() {
         private val types: MutableSet<FQName> = mutableSetOf()
 
         override fun visitClassOrObject(classOrObject: KtClassOrObject) {
             val fqName = classOrObject.getUserData(UserData.fqName)
 
-            val visitor = Visitor(context)
+            val visitor = Visitor(context, typesByClass)
             for (child in classOrObject.children) {
                 visitor.visitElement(child)
             }

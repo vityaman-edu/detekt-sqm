@@ -1,3 +1,4 @@
+ru.vityaman.detekt.sqm.processors.CouplingProcessor
 ru.vityaman.detekt.sqm.processors.ReferencedTypesProcessor
 ru.vityaman.detekt.sqm.processors.ChildrenNumberProcessor
 ru.vityaman.detekt.sqm.processors.InheritanceDepthProcessor
