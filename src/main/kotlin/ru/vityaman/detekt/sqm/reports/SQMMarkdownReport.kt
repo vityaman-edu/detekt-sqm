@@ -35,8 +35,8 @@ class SQMMarkdownReport : OutputReport() {
             append("## Inheritance Tree\n")
             append("\n")
             for ((klass, parents) in tree.toSortedMap()) {
-                val parents = parents.ifEmpty { listOf("Object") }
-                append("- `${map(klass)}`: ${parents.joinToString(", ") { map(it) }}\n")
+                val parents = parents.ifEmpty { setOf("Object") }
+                append("- `${map(klass)}`: ${map(parents)}\n")
             }
             append("\n")
         }
@@ -56,7 +56,7 @@ class SQMMarkdownReport : OutputReport() {
             append("## Children\n")
             append("\n")
             for ((klass, children) in children.toSortedMap()) {
-                append("- `${map(klass)}`: ${children.joinToString(", ") { map(it) }}\n")
+                append("- `${map(klass)}`: ${map(children)}\n")
             }
             append("\n")
         }
@@ -71,9 +71,22 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
         }
 
+        val referencedTypes = detektion.getData(UserData.referencedTypes)
+        if (referencedTypes != null) {
+            append("## Referenced Types By Class\n")
+            append("\n")
+            for ((klass, types) in referencedTypes.toSortedMap()) {
+                append("- `${map(klass)}`: ${map(types)}\n")
+            }
+            append("\n")
+        }
+
         toString()
     }
 
     private fun map(name: FQName): String =
         shortenFQ(name)
+
+    private fun map(names: Set<FQName>): String =
+        names.toSortedSet().joinToString(", ") { map(it) }
 }

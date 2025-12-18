@@ -11,7 +11,7 @@ import ru.vityaman.detekt.sqm.core.Log
 abstract class ProjectProcessor<T> : FileProcessListener {
     abstract val key: Key<T>
 
-    protected abstract fun visit(file: KtFile): T
+    protected abstract fun visit(file: KtFile, context: BindingContext): T
 
     protected abstract fun merge(lhs: T?, rhs: T): T
 
@@ -25,7 +25,7 @@ abstract class ProjectProcessor<T> : FileProcessListener {
 
     final override fun onProcess(file: KtFile, bindingContext: BindingContext) {
         val lhs = file.project.getUserData(key)
-        file.project.putUserData(key, merge(lhs, visit(file)))
+        file.project.putUserData(key, merge(lhs, visit(file, bindingContext)))
     }
 
     final override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {

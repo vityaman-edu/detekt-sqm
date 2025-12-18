@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.isAbstract
+import org.jetbrains.kotlin.resolve.BindingContext
 import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.TypeKind
 
@@ -12,7 +13,7 @@ class TypeKindProcessor : ProjectProcessor<Map<FQName, TypeKind>>() {
     override val key: Key<Map<FQName, TypeKind>>
         get() = UserData.typeKind
 
-    override fun visit(file: KtFile): Map<FQName, TypeKind> =
+    override fun visit(file: KtFile, context: BindingContext): Map<FQName, TypeKind> =
         Visitor().also { it.visitFile(file) }.kinds
 
     override fun merge(

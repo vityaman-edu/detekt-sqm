@@ -14,4 +14,5 @@ object UserData {
     val inheritanceDepth = Key<Map<FQName, Int>>("InheritanceTreeDepth")
     val children = Key<Map<FQName, Set<FQName>>>("Children")
     val childrenNumber = Key<Map<FQName, Int>>("ChildrenNumber")
+    val referencedTypes = Key<Map<FQName, Set<FQName>>>("ReferencedTypes")
 }
