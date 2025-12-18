@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import ru.vityaman.detekt.sqm.processors.CouplingProcessor
 import ru.vityaman.detekt.sqm.processors.QualificationProcessor
 import ru.vityaman.detekt.sqm.processors.ReferencedTypesProcessor
+import ru.vityaman.detekt.sqm.reports.SQMMarkdownReport
 
 @KotlinCoreEnvironmentTest
 class CouplingRuleTest(private val env: KotlinCoreEnvironment) {

@@ -5,16 +5,16 @@ import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportDirective
-import org.jetbrains.kotlin.psi.KtSuperTypeListEntry
 import org.jetbrains.kotlin.resolve.BindingContext
 import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.Log
 
-class QualificationProcessor : FileProcessListener {
+open class QualificationProcessor : FileProcessListener {
     private val qualified: MutableMap<String, String> = mutableMapOf()
 
     override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
         Log.debug { "Running ${UserData.fqName}..." }
+        files.forEach { onProcess(it, bindingContext) }
     }
 
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
