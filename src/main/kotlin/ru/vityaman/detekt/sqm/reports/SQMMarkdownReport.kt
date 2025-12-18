@@ -91,6 +91,26 @@ class SQMMarkdownReport : OutputReport() {
             append("\n")
         }
 
+        val called = detektion.getData(UserData.calledMethods)
+        if (called != null) {
+            append("## Called Methods\n")
+            append("\n")
+            for ((klass, called) in called.toSortedMap()) {
+                append("- `${map(klass)}`: (${called.size}) ${called.joinToString(", ") { "${map(it.klass)}::${it.name}" }}\n")
+            }
+            append("\n")
+        }
+
+        val rfc = detektion.getData(UserData.classResponse)
+        if (rfc != null) {
+            append("## Response for a Class (First Step)\n")
+            append("\n")
+            for ((klass, rfc) in rfc.toSortedMap()) {
+                append("- `${map(klass)}`: ${rfc}\n")
+            }
+            append("\n")
+        }
+
         toString()
     }
 

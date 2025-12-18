@@ -7,38 +7,50 @@ import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
-import org.jetbrains.kotlin.psi.psiUtil.isAbstract
 import org.jetbrains.kotlin.resolve.BindingContext
 import ru.vityaman.detekt.sqm.core.FQName
 import ru.vityaman.detekt.sqm.core.Log
 
 class WeightedMethodsPerClassProcessor : FileProcessListener {
+    private val key = UserData.weightedMethodsPerClass
+
+    fun visit(file: KtFile): Map<FQName, Int> {
+        val visitor = Visitor()
+        file.accept(visitor)
+
+        return visitor.methodsByClass()
+            .mapKeys { it.key }
+            .mapValues { it.value.size }
+    }
+
+    fun merge(lhs: Map<FQName, Int>?, rhs: Map<FQName, Int>): Map<FQName, Int> =
+        (lhs ?: emptyMap()) + rhs
+
     override fun onStart(files: List<KtFile>, bindingContext: BindingContext) {
-        Log.debug { "Running ${UserData.weightedMethodsPerClass}..." }
+        Log.debug { "Running $key..." }
     }
 
     override fun onProcess(file: KtFile, bindingContext: BindingContext) {
-        val visitor = KtClassVisitor()
-        file.accept(visitor)
+        val lhs = file.project.getUserData(key)
 
-        val data = visitor.methodsByClass()
-            .mapKeys { it.key }
-            .mapValues { it.value.size }
-        file.putUserData(UserData.weightedMethodsPerClass, data)
+        val rhs = visit(file)
+        file.putUserData(key, rhs)
+
+        file.project.putUserData(key, merge(lhs, rhs))
     }
 
     override fun onFinish(files: List<KtFile>, result: Detektion, bindingContext: BindingContext) {
         val methods = mutableMapOf<FQName, Int>()
         for (file in files) {
-            val data = file.getUserData(UserData.weightedMethodsPerClass) ?: continue
+            val data = file.getUserData(key) ?: continue
             methods += data
         }
-        result.addData(UserData.weightedMethodsPerClass, methods)
+        result.addData(key, methods)
     }
 
-    private class KtClassVisitor : DetektVisitor() {
-        private val methods: MutableMap<String, MutableList<String>> = mutableMapOf()
-        private var classes: MutableList<String> = mutableListOf()
+    private class Visitor : DetektVisitor() {
+        private val methods: MutableMap<FQName, MutableList<String>> = mutableMapOf()
+        private var classes: MutableList<FQName> = mutableListOf()
 
         fun methodsByClass(): Map<FQName, List<String>> = methods
 

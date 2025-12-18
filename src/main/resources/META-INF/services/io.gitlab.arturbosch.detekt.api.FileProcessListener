@@ -1,3 +1,5 @@
+ru.vityaman.detekt.sqm.processors.ClassResponseProcessor
+ru.vityaman.detekt.sqm.processors.CalledMethodsProcessor
 ru.vityaman.detekt.sqm.processors.CouplingProcessor
 ru.vityaman.detekt.sqm.processors.ReferencedTypesProcessor
 ru.vityaman.detekt.sqm.processors.ChildrenNumberProcessor
