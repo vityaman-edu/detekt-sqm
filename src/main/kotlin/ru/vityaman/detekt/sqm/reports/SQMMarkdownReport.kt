@@ -115,7 +115,7 @@ class SQMMarkdownReport : OutputReport() {
     }
 
     private fun map(name: FQName): String =
-        name
+        shortenFQ(name)
 
     private fun map(names: Set<FQName>): String =
         names.toSortedSet().joinToString(", ") { map(it) }
